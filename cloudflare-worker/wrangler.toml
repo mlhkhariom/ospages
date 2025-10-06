@@ -1,0 +1,21 @@
+name = "os-worker"
+main = "index.js"
+compatibility_date = "2024-11-01"
+account_id = "5c8c605401728e11e0c6b03afa292578"
+
+[vars]
+
+[[d1_databases]]
+binding = "DB"
+database_name = "os-db"
+database_id = "ff3ac970-9b57-47e4-82e4-253abe916f8c"
+
+[[r2_buckets]]
+binding = "R2_BUCKET"
+bucket_name = "hybrid"
+
+[[kv_namespaces]]
+binding = "HYPER"
+id = "88687253bcc24023bfd371b2de32cb88"
+
+

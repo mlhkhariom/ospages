@@ -1,15 +1,48 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { createDisk, listDisks } from "../lib/api";
 
 type Disk = { name: string };
 
 export default function DiskManager() {
   const [disks, setDisks] = useState<Disk[]>([]);
   const [newDisk, setNewDisk] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [creating, setCreating] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const handleAddDisk = () => {
-    if (newDisk) {
-      setDisks([...disks, { name: newDisk }]);
-      setNewDisk("");
+  useEffect(() => {
+    let mounted = true;
+    (async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const result = await listDisks();
+        if (mounted) setDisks(result);
+      } catch (e) {
+        if (mounted) setError("Failed to load disks");
+      } finally {
+        if (mounted) setLoading(false);
+      }
+    })();
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
+  const handleAddDisk = async () => {
+    if (!newDisk) return;
+    setCreating(true);
+    setError(null);
+    try {
+      const res = await createDisk(newDisk);
+      if (res && res.success) {
+        setDisks([...disks, { name: newDisk }]);
+        setNewDisk("");
+      }
+    } catch (e) {
+      setError("Failed to create disk");
+    } finally {
+      setCreating(false);
     }
   };
 
@@ -31,15 +64,19 @@ export default function DiskManager() {
           Add Disk
         </button>
       </div>
-      <ul>
-        {disks.length === 0 ? (
-          <li className="text-green-300">No disks found.</li>
-        ) : (
-          disks.map((disk, idx) => (
-            <li key={idx} className="text-green-200">{disk.name}</li>
-          ))
-        )}
-      </ul>
+      {loading && <div className="text-green-400">Loading...</div>}
+      {error && <div className="text-red-400">{error}</div>}
+      {!loading && !error && (
+        <ul>
+          {disks.length === 0 ? (
+            <li className="text-green-300">No disks found.</li>
+          ) : (
+            disks.map((disk, idx) => (
+              <li key={idx} className="text-green-200">{disk.name}</li>
+            ))
+          )}
+        </ul>
+      )}
     </div>
   );
 }

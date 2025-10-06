@@ -1,4 +1,7 @@
 import React, { useState } from "react";
+import FileExplorer from "./FileExplorer";
+import Terminal from "./Terminal";
+import Settings from "./Settings";
 
 const apps = [
   { id: "explorer", name: "File Explorer" },
@@ -17,9 +20,9 @@ function Window({ app, onClose }: WindowProps) {
         <button onClick={onClose} className="text-green-400 hover:text-green-200">✕</button>
       </div>
       <div className="flex-1 p-4 text-green-200 overflow-auto">
-        {app.id === "explorer" && <div>File Explorer UI here</div>}
-        {app.id === "terminal" && <div>Terminal UI here</div>}
-        {app.id === "settings" && <div>Settings UI here</div>}
+        {app.id === "explorer" && <FileExplorer />}
+        {app.id === "terminal" && <Terminal />}
+        {app.id === "settings" && <Settings />}
       </div>
     </div>
   );

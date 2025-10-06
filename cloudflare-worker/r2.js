@@ -1,17 +1,29 @@
-// R2 integration placeholder for Cloudflare Worker
-// This file will contain functions to interact with R2 storage
+// Minimal R2 helpers
 
 export async function listR2Files(bucket) {
-  // TODO: Implement R2 file listing
-  return [];
+  try {
+    const iter = bucket.list({ limit: 100 });
+    const res = await iter;
+    return (res.objects || []).map(o => ({ name: o.key }));
+  } catch (_) {
+    return [];
+  }
 }
 
-export async function uploadR2File(bucket, file) {
-  // TODO: Implement R2 file upload
-  return { success: true };
+export async function uploadR2File(bucket, key, data, contentType = "application/octet-stream") {
+  try {
+    await bucket.put(key, data, { httpMetadata: { contentType } });
+    return { success: true };
+  } catch (e) {
+    return { success: false };
+  }
 }
 
-export async function deleteR2File(bucket, filename) {
-  // TODO: Implement R2 file deletion
-  return { success: true };
+export async function deleteR2File(bucket, key) {
+  try {
+    await bucket.delete(key);
+    return { success: true };
+  } catch (e) {
+    return { success: false };
+  }
 }

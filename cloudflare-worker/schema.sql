@@ -1,0 +1,7 @@
+-- D1 schema for disks
+CREATE TABLE IF NOT EXISTS disks (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  name TEXT NOT NULL UNIQUE
+);
+
+
